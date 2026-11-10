@@ -27,9 +27,9 @@ export class HealthResponseDto {
   environment: string;
 
   @ApiProperty({
-    example: 'disabled',
-    enum: ['up', 'disabled'],
+    example: 'up',
+    enum: ['up'],
     description: 'Trạng thái kết nối PostgreSQL qua TypeORM',
   })
-  database: 'up' | 'disabled';
+  database: 'up';
 }

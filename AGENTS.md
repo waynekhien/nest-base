@@ -1,6 +1,6 @@
 # Project Coding Rules (`nest-base`)
 
-Mọi đoạn code tạo mới hoặc chỉnh sửa trong dự án này **bắt buộc** tuân thủ nghiêm ngặt 3 nguyên tắc cốt lõi sau:
+Mọi đoạn code tạo mới hoặc chỉnh sửa trong dự án này **bắt buộc** tuân thủ nghiêm ngặt 5 nguyên tắc cốt lõi sau:
 
 ---
 
@@ -62,3 +62,28 @@ try {
   });
 }
 ```
+
+---
+
+## 4. Không cần viết test
+- **Không tạo mới file test** (`*.spec.ts`, `*.e2e-spec.ts`) khi thêm hoặc chỉnh sửa tính năng.
+- Không viết thêm test case cho code vừa làm, trừ khi người dùng yêu cầu rõ ràng.
+- Các file test đã có sẵn trong dự án được giữ nguyên, không cần cập nhật thêm nếu người dùng không yêu cầu.
+
+---
+
+## 5. File phải đặt đúng vị trí và đúng chức năng
+- **Mỗi file chỉ nằm ở thư mục đúng với vai trò của nó.** Không để lẫn các loại file khác nhau trong cùng một thư mục chỉ vì tiện.
+- **`src/common/entity/`**: các entity TypeORM dùng chung (ví dụ `user.entity.ts`). Không đặt entity trong thư mục `modules/<tên>/`.
+- **`src/common/constant/`**: hằng số dùng chung (ví dụ `user.constant.ts`). Không để file constant nằm lẫn trong thư mục module.
+- **`src/common/enum/`**: enum dùng chung (ví dụ `server-exception-type.enum.ts`).
+- **`src/common/dto/`**: DTO dùng chung cho nhiều module (ví dụ `http-error-response.dto.ts`). DTO riêng của một module nằm trong `modules/<tên>/dto/`.
+- **`src/common/exception/`**: các class exception dùng chung (ví dụ `server.exception.ts`).
+- **`src/common/filter/`**: exception filter dùng chung (ví dụ `all-exception.filter.ts`).
+- **`src/common/interceptor/`**: interceptor dùng chung (ví dụ `response.interceptor.ts`).
+- **`src/common/decorator/`**: decorator dùng chung (ví dụ `raw-response.decorator.ts`).
+- **`src/common/util/`**: hàm tiện ích thuần, không phụ thuộc module (ví dụ `convert-error-to-object.util.ts`).
+- **`src/modules/<tên>/`**: chỉ chứa `*.module.ts`, `*.controller.ts`, `*.service.ts` và thư mục `dto/` của module đó.
+- **`src/config/`**: cấu hình và validate biến môi trường. **`src/database/`**: kết nối và hạ tầng database.
+- Khi thêm file mới, phải xác định đúng chức năng của nó rồi đặt vào thư mục tương ứng. Nếu chưa có thư mục phù hợp, hãy tạo mới thay vì đặt tạm vào chỗ không đúng.
+- Đặt tên file theo dạng `<tên>.<loại>.ts` (ví dụ `user.entity.ts`, `user.constant.ts`).
