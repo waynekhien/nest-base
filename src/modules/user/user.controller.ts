@@ -25,9 +25,9 @@ import {
 import { HttpErrorResponseDto } from '../../common/dto/http-error-response.dto.js';
 import { PaginationQueryDto } from '../../common/dto/pagination-query.dto.js';
 import { PaginationResponseDto } from '../../common/dto/pagination-response.dto.js';
+import { UserResponseDto } from '../../common/dto/user-response.dto.js';
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
-import { UserResponseDto } from './dto/user-response.dto.js';
 import { UserService } from './user.service.js';
 
 @ApiTags('Users')

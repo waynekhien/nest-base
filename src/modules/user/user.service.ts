@@ -1,18 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { hash } from 'bcryptjs';
 import { Repository } from 'typeorm';
 import { ERROR_RESPONSE } from '../../common/constant/error-response.constant.js';
-import { PASSWORD_SALT_ROUNDS } from '../../common/constant/user.constant.js';
-import { User } from '../../common/entity/user.entity.js';
 import { PaginationQueryDto } from '../../common/dto/pagination-query.dto.js';
 import { PaginationResponseDto } from '../../common/dto/pagination-response.dto.js';
+import { UserResponseDto } from '../../common/dto/user-response.dto.js';
+import { User } from '../../common/entity/user.entity.js';
 import { ServerException } from '../../common/exception/server.exception.js';
 import { buildPaginationMetadata } from '../../common/util/build-pagination-metadata.util.js';
+import { hashPassword } from '../../common/util/hash-password.util.js';
 import { isUniqueViolation } from '../../common/util/is-unique-violation.util.js';
+import { mapUserToResponseDto } from '../../common/util/map-user-to-response.util.js';
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
-import { UserResponseDto } from './dto/user-response.dto.js';
 
 @Injectable()
 export class UserService {
@@ -29,11 +29,11 @@ export class UserService {
       name: createUserDto.name,
       description: createUserDto.description,
       isActive: createUserDto.isActive,
-      password: await this.hashPassword(createUserDto.password),
+      password: await hashPassword(createUserDto.password),
     });
     const savedUser = await this.saveUser(user);
 
-    return this.toResponseDto(savedUser);
+    return mapUserToResponseDto(savedUser);
   }
 
   async findAll(
@@ -47,7 +47,7 @@ export class UserService {
     });
 
     return {
-      data: users.map((user) => this.toResponseDto(user)),
+      data: users.map(mapUserToResponseDto),
       meta: buildPaginationMetadata(total, page, pageSize),
     };
   }
@@ -55,7 +55,7 @@ export class UserService {
   async findOne(id: string): Promise<UserResponseDto> {
     const user = await this.findUserOrFail(id);
 
-    return this.toResponseDto(user);
+    return mapUserToResponseDto(user);
   }
 
   async update(
@@ -72,12 +72,12 @@ export class UserService {
     Object.assign(user, otherFields);
 
     if (newPassword) {
-      user.password = await this.hashPassword(newPassword);
+      user.password = await hashPassword(newPassword);
     }
 
     const savedUser = await this.saveUser(user);
 
-    return this.toResponseDto(savedUser);
+    return mapUserToResponseDto(savedUser);
   }
 
   async remove(id: string): Promise<void> {
@@ -85,6 +85,16 @@ export class UserService {
 
     if (!deleteResult.affected) {
       throw ServerException.fromErrorResponse(ERROR_RESPONSE.USER_NOT_FOUND);
+    }
+  }
+
+  async assertEmailAvailable(email: string): Promise<void> {
+    const isEmailTaken = await this.userRepository.exists({ where: { email } });
+
+    if (isEmailTaken) {
+      throw ServerException.fromErrorResponse(
+        ERROR_RESPONSE.USER_ALREADY_EXISTS,
+      );
     }
   }
 
@@ -96,16 +106,6 @@ export class UserService {
     }
 
     return user;
-  }
-
-  private async assertEmailAvailable(email: string): Promise<void> {
-    const isEmailTaken = await this.userRepository.exists({ where: { email } });
-
-    if (isEmailTaken) {
-      throw ServerException.fromErrorResponse(
-        ERROR_RESPONSE.USER_ALREADY_EXISTS,
-      );
-    }
   }
 
   private async saveUser(user: User): Promise<User> {
@@ -121,21 +121,5 @@ export class UserService {
 
       throw error;
     }
-  }
-
-  private hashPassword(plainPassword: string): Promise<string> {
-    return hash(plainPassword, PASSWORD_SALT_ROUNDS);
-  }
-
-  private toResponseDto(user: User): UserResponseDto {
-    return {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      description: user.description,
-      isActive: user.isActive,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-    };
   }
 }
