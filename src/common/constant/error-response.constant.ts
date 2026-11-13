@@ -51,6 +51,11 @@ export const ERROR_RESPONSE = {
     message:
       'Incorrect username or password. Please check your credentials and try again',
   },
+  INVALID_REFRESH_TOKEN: {
+    statusCode: HttpStatus.UNAUTHORIZED,
+    errorCode: ServerExceptionType.INVALID_REFRESH_TOKEN,
+    message: 'Invalid or expired refresh token',
+  },
   USER_NOT_FOUND: {
     statusCode: HttpStatus.NOT_FOUND,
     errorCode: ServerExceptionType.USER_NOT_FOUND,

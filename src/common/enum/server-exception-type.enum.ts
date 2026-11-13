@@ -7,6 +7,7 @@ export enum ServerExceptionType {
   SERVICE_UNAVAILABLE = 'service_unavailable',
   REQUEST_PAYLOAD_VALIDATION_ERROR = 'request_payload_validation_error',
   INVALID_CREDENTIALS = 'invalid_credentials',
+  INVALID_REFRESH_TOKEN = 'invalid_refresh_token',
   USER_NOT_FOUND = 'user_not_found',
   USER_ALREADY_EXISTS = 'user_already_exists',
   USER_DEACTIVATED = 'user_deactivated',
