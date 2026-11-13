@@ -8,7 +8,6 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HttpAdapterHost } from '@nestjs/core';
-import type { Request } from 'express';
 import type { EnvConfig } from '../../config/env.validation.js';
 import { ERROR_RESPONSE } from '../constant/error-response.constant.js';
 import { PRODUCTION_ENVIRONMENT } from '../constant/environment.constant.js';
@@ -32,7 +31,6 @@ export class AllExceptionFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost): void {
     const { httpAdapter } = this.httpAdapterHost;
     const context = host.switchToHttp();
-    const request = context.getRequest<Request>();
 
     const errorBody =
       exception instanceof HttpException
@@ -42,7 +40,6 @@ export class AllExceptionFilter implements ExceptionFilter {
     const responseBody: HttpErrorBody = {
       ...errorBody,
       timestamp: new Date().toISOString(),
-      path: request.url,
     };
 
     if (this.isProduction()) {

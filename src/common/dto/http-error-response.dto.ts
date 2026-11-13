@@ -30,12 +30,6 @@ export class HttpErrorResponseDto {
   timestamp?: string;
 
   @ApiPropertyOptional({
-    example: '/users/3f1c2a4e-8b7d-4c1a-9e0f-5a6b7c8d9e10',
-    description: 'Đường dẫn request gây ra lỗi',
-  })
-  path?: string;
-
-  @ApiPropertyOptional({
     type: Object,
     description: 'Chi tiết lỗi, chỉ trả về ở môi trường không phải production',
   })
