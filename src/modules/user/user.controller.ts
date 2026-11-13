@@ -12,6 +12,7 @@ import {
   Query,
 } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiConflictResponse,
   ApiNoContentResponse,
   ApiNotFoundResponse,
@@ -31,6 +32,7 @@ import { UpdateUserDto } from './dto/update-user.dto.js';
 import { UserService } from './user.service.js';
 
 @ApiTags('Users')
+@ApiBearerAuth()
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}

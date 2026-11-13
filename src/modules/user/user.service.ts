@@ -58,6 +58,14 @@ export class UserService {
     return mapUserToResponseDto(user);
   }
 
+  async findByEmailForAuth(email: string): Promise<User | null> {
+    return this.userRepository
+      .createQueryBuilder('user')
+      .addSelect('user.password')
+      .where('user.email = :email', { email })
+      .getOne();
+  }
+
   async update(
     id: string,
     updateUserDto: UpdateUserDto,
